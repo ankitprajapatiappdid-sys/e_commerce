@@ -3,9 +3,6 @@ import 'dart:developer';
 
 import 'package:e_commerce_app/services/route_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import '../../../controllers/auth_controller.dart';
 import '../../../services/constants.dart';
 import '../../base/custom_widget.dart/custom_image.dart';
 import '../dashboard/dashboard_screen.dart';

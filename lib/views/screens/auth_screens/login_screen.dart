@@ -92,11 +92,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   hintText: "Phone number",
                   hintStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                       ),
                   enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
-                          color: Colors.black.withOpacity(0.3), width: 1)),
+                          color: Colors.black.withValues(alpha: 0.3), width: 1)),
                 ),
                 onChanged: (txt) {
                   if (txt.length == 10) {

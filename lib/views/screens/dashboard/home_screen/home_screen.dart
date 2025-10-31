@@ -2,7 +2,6 @@
 import 'dart:developer';
 
 import 'package:e_commerce_app/controllers/product_controller.dart';
-import 'package:e_commerce_app/views/base/custom_widget.dart/custom_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

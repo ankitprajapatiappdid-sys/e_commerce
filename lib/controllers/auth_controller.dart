@@ -8,7 +8,6 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import '../data/models/response/response_model.dart';
 import '../data/models/response/user_model.dart';
 import '../data/repositories/auth_repo.dart';
-import '../services/constants.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthRepo authRepo;
