@@ -63,7 +63,7 @@ class AppConstants {
   String get getBaseUrl => baseUrl;
 
   set setBaseUrl(String url) => baseUrl = url;
-  static const String liveUrl = 'https://api.escuelajs.co/';
+  static const String liveUrl = 'https://fakestoreapi.com/';
   static const String localUrl = 'http://192.168.1.11:8000/';
   static String baseUrl = (kReleaseMode || isProduction) ? liveUrl : localUrl;
 
@@ -84,8 +84,8 @@ class AppConstants {
 
 
   //products
-  static const String getCategories='api/v1/categories';
-  static const String getProducts='api/v1/products';
+  static const String categories='api/v1/categories';
+  static const String getProducts='products';
 
 
   // Shared Key

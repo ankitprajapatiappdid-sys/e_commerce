@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:e_commerce_app/services/extensions.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,7 +65,5 @@ class AuthRepo {
     return OneSignal.User.pushSubscription.id ?? 'null';
   }
 
-  Future<Response> getProductsCategories() async => await apiClient.getData(
-      AppConstants.getCategories
-  );
+
 }

@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:e_commerce_app/controllers/dashboard_controller.dart';
 import 'package:e_commerce_app/controllers/product_controller.dart';
+import 'package:e_commerce_app/data/repositories/product_repo.dart';
 import 'package:flutter/services.dart';
 import 'package:get/instance_manager.dart';
 import 'package:e_commerce_app/controllers/one_signal_controller.dart';
@@ -43,13 +44,14 @@ class Init {
       Get.lazyPut(
           () => AuthRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
       Get.lazyPut(() => BasicRepo(apiClient: Get.find()));
+      Get.lazyPut(() => ProductRepo(apiClient: Get.find()));
 
       //--------Controllers-----------
       Get.lazyPut(() => PermissionController());
       Get.lazyPut(() => AuthController(authRepo: Get.find()));
       Get.lazyPut(() => OneSingleController());
       Get.lazyPut(() => DashBoardController());
-      Get.lazyPut(()=> ProductController(authRepo: Get.find()));
+      Get.lazyPut(()=> ProductController(productRepo: Get.find()));
     } catch (e) {
       log('---- ${e.toString()} ----', name: "ERROR AT initialize()");
     }
