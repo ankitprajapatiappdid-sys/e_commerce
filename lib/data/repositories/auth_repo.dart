@@ -14,7 +14,7 @@ class AuthRepo {
   AuthRepo({required this.sharedPreferences, required this.apiClient});
 
   /// Methods to deal with Remote Data ///
-  Future<Response> login({required Map<String, dynamic> data}) async =>
+  Future<Response> login({required  dynamic data}) async =>
       await apiClient.postData(AppConstants.loginUri, data);
 
   Future<Response> otpVerification(
@@ -63,4 +63,8 @@ class AuthRepo {
   Future<String> getDeviceId() async {
     return OneSignal.User.pushSubscription.id ?? 'null';
   }
+
+  Future<Response> getProductsCategories() async => await apiClient.getData(
+      AppConstants.getCategories
+  );
 }

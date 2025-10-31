@@ -1,3 +1,9 @@
+
+import 'dart:developer';
+
+import 'package:e_commerce_app/views/screens/dashboard/profile_screen/profile_screen.dart';
+import 'package:e_commerce_app/views/screens/dashboard/shopping_screen/shopping_screen.dart';
+import 'package:e_commerce_app/views/screens/dashboard/wishlist_screen/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -5,6 +11,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import '../../../controllers/dashboard_controller.dart';
 import '../../../generated/assets.dart';
 import '../../../services/theme.dart';
+import 'home_screen/home_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -14,15 +21,26 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    log("Dashboard Screen Active", name: "IsDashBoard");
+  }
+
+  final pages = [
+    const HomeScreen(),
+    const WishlistScreen(),
+    const ShoppingScreen(),
+    const ProfileScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<DashBoardController>(
         builder: (DashBoardController controller) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: [][controller.dashPage],
-          );
+          return pages[controller.dashPage];
         },
       ),
       bottomNavigationBar: GetBuilder<DashBoardController>(
@@ -42,34 +60,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   BottomNavigationItemWidget(
                     onTap: () {
                       controller.dashPage = 0;
+                      controller.update();
                     },
                     title: 'Home',
                     icon: Assets.svgsHomeOutline,
-                    isActive: controller.dashPage == 0 ? true : false,
+                    isActive: controller.dashPage == 0 ,
                   ),
                   BottomNavigationItemWidget(
                     onTap: () {
                       controller.dashPage = 1;
+                      controller.update();
                     },
-                    title: 'Projects',
+                    title: 'Shopping',
                     icon: Assets.svgsProjectsOutline,
-                    isActive: controller.dashPage == 0 ? true : false,
+                    isActive: controller.dashPage == 1,
                   ),
                   BottomNavigationItemWidget(
                     onTap: () {
                       controller.dashPage = 2;
+                      controller.update();
                     },
-                    title: 'Favorites',
+                    title: 'Wishlist',
                     icon: Assets.svgsHeartOutline,
-                    isActive: controller.dashPage == 0 ? true : false,
+                    isActive: controller.dashPage == 2,
                   ),
                   BottomNavigationItemWidget(
                     onTap: () {
                       controller.dashPage = 3;
+                      controller.update();
                     },
-                    title: 'More',
+                    title: 'Profile',
                     icon: Assets.svgsMoreOutline,
-                    isActive: controller.dashPage == 0 ? true : false,
+                    isActive: controller.dashPage == 3,
                   ),
                 ],
               ),
@@ -81,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-///
+
 class BottomNavigationItemWidget extends StatelessWidget {
   const BottomNavigationItemWidget({
     super.key,
@@ -117,7 +139,7 @@ class BottomNavigationItemWidget extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               title,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     color: isActive ? primaryColor : const Color(0xFF393648),

@@ -61,7 +61,8 @@ class ApiClient extends GetConnect implements GetxService {
       );
       // log('aasdas'+response.bodyString!+'aasdas',name: '$uri');
 
-      log('====> GetX Response: [${response.statusCode}] $uri');
+      log('====> GetX Response: [${response.statusCode}]');
+      log('====> GetX Response: [${response.bodyString}] $uri');
       response = handleResponse(response);
       if (kDebugMode) {
         // log('====> GetX Response: [${response.statusCode}] $uri\n${uri.contains('astros') || uri.contains('shop') || uri.contains('shop') ? response.body[0] : response.body}');
@@ -96,9 +97,9 @@ class ApiClient extends GetConnect implements GetxService {
         decoder: decoder,
         uploadProgress: uploadProgress,
       );
-      log('====> GetX Response: [${response.statusCode}] $uri'); //\n${response.body}
+      log('====> GetX Response: [${response.statusCode}]');
+      log('====> GetX Response: [${response.bodyString}] $uri');
       response = handleResponse(response);
-      log('====> GetX Response: [${response.statusCode}] $uri');
       if (kDebugMode) {
         // print('====> GetX Response: [${response.statusCode}] $uri');
       }

@@ -1,4 +1,57 @@
+import 'package:e_commerce_app/services/theme.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
+
+import '../main.dart';
+
+class Helper {
+  final BuildContext context;
+  Helper(this.context);
+
+  Size get size => MediaQuery.sizeOf(context);
+  TextTheme get textTheme => Theme.of(context).textTheme;
+}
+
+enum ToastType {
+  info(ToastificationType.info),
+  warning(ToastificationType.warning),
+  error(ToastificationType.error),
+  success(ToastificationType.success);
+
+  const ToastType(this.value);
+  final ToastificationType value;
+}
+
+void showToast({ToastType? toastType, required String message, String? description, ToastificationStyle? toastificationStyle, bool? typeCheck}) {
+  toastification.show(
+    alignment: Alignment.topLeft,
+    type: toastType?.value ?? ((typeCheck ?? false) ? ToastificationType.success : ToastificationType.error),
+    title: Text(
+      message,
+      style: Helper(navigatorKey.currentContext!).textTheme.bodyMedium!.copyWith(
+        color: black,
+        fontSize: 14,
+      ),
+    ),
+    description: description != null
+        ? Text(description,
+        style: Helper(navigatorKey.currentContext!).textTheme.bodySmall!.copyWith(
+          color: black,
+        ))
+        : null,
+    style: toastificationStyle ?? ToastificationStyle.minimal,
+    icon: toastType == ToastType.success
+        ? const Icon(Icons.check_circle_outline)
+        : toastType == ToastType.error
+        ? const Icon(Icons.error_outline)
+        : toastType == ToastType.warning
+        ? const Icon(Icons.warning_amber)
+        : const Icon(Icons.info_outline),
+    autoCloseDuration: const Duration(seconds: 2),
+  );
+}
+
 
 String getStringFromList(List<dynamic>? data) {
   String str = data.toString();
@@ -31,8 +84,9 @@ class AppConstants {
 
 
   //products
-
+  static const String getCategories='api/v1/categories';
   static const String getProducts='api/v1/products';
+
 
   // Shared Key
   static const String token = 'user_app_token';

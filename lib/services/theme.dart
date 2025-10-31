@@ -9,6 +9,8 @@ Color backgroundLight = const Color(0xffffffff);
 const Color textPrimary = Color(0xff000000);
 const Color textSecondary = Color(0xff292929);
 
+Color black=const Color(0xFF000000);
+
 class CustomTheme {
   static ThemeData light = ThemeData(
     fontFamily: "Poppins",

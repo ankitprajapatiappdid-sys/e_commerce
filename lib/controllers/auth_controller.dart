@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:get/get.dart';
@@ -26,57 +27,95 @@ class AuthController extends GetxController implements GetxService {
   bool get acceptTerms => _acceptTerms;
 
 
-  Future<ResponseModel> login({required Map<String, dynamic> data}) async {
+  int resendTimer = 30;
+  Timer? _otpTimer;
+  String otpCode = "";
+  updateOtp(String value) {
+    if (otpCode != value) {
+      otpCode = value;
+      update();
+    }
+  }
+
+  startTimer() {
+    resendTimer = 30;
+    update();
+    if (_otpTimer?.isActive ?? false) {
+      _otpTimer?.cancel();
+    }
+    _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendTimer > 0) {
+        resendTimer--;
+        update();
+      } else {
+        _otpTimer?.cancel();
+      }
+    });
+  }
+
+
+  // Future<ResponseModel> login({required Map<String, dynamic> data}) async {
+  //   ResponseModel responseModel;
+  //   _isLoading = true;
+  //   update();
+  //   log("response.body.toString()${AppConstants.baseUrl}${AppConstants.loginUri}",
+  //       name: "login");
+  //   try {
+  //     Response response = await authRepo.login(data: data);
+  //     if (response.statusCode == 200 && response.body['success']) {
+  //       responseModel =
+  //           ResponseModel(true, '${response.body['message']}', response.body);
+  //     } else {
+  //       responseModel = ResponseModel(false, response.statusText!);
+  //     }
+  //   } catch (e) {
+  //     responseModel = ResponseModel(false, "CATCH");
+  //     log('++++++++++++++++++++++++++++++++++++++++++++ ${e.toString()} +++++++++++++++++++++++++++++++++++++++++++++',
+  //         name: "ERROR AT login()");
+  //   }
+  //   _isLoading = false;
+  //   update();
+  //   return responseModel;
+  // }
+
+
+
+
+
+  Future<ResponseModel> generatedOtp({required dynamic data}) async {
+    log('----------- generatedOtp Called ----------');
+
     ResponseModel responseModel;
     _isLoading = true;
     update();
-    log("response.body.toString()${AppConstants.baseUrl}${AppConstants.loginUri}",
-        name: "login");
+
     try {
+      otpCode = "";
+
       Response response = await authRepo.login(data: data);
       if (response.statusCode == 200 && response.body['success']) {
-        responseModel =
-            ResponseModel(true, '${response.body['message']}', response.body);
+        responseModel = ResponseModel(true, response.body['message'] ?? "Otp sent successfully");
       } else {
-        responseModel = ResponseModel(false, response.statusText!);
+        responseModel = ResponseModel(false, response.body['message'] ?? "Error while sending Otp");
       }
     } catch (e) {
       responseModel = ResponseModel(false, "CATCH");
-      log('++++++++++++++++++++++++++++++++++++++++++++ ${e.toString()} +++++++++++++++++++++++++++++++++++++++++++++',
-          name: "ERROR AT login()");
+      log('++++++++++++++ ${e.toString()} +++++++++++++++++++++++++', name: "ERROR AT generatedOtp()");
     }
+
     _isLoading = false;
     update();
     return responseModel;
   }
 
-  // Future<ResponseModel> generatedOtp({required String phone}) async {
-  //   log('----------- generatedOtp Called ----------');
-  //
-  //   ResponseModel responseModel;
-  //   _isLoading = true;
-  //   update();
-  //
-  //   try {
-  //     Response response = await authRepo.generateOtp(phone: phone);
-  //     if ((response.data as Map).containsKey('errors')) {
-  //       Fluttertoast.showToast(msg: '${response.data['message']}', toastLength: Toast.LENGTH_LONG);
-  //       responseModel = ResponseModel(false, response.statusMessage ?? '', response.data['errors']);
-  //     } else if (response.statusCode == 200 && response.data['success']) {
-  //       responseModel = ResponseModel(true, response.statusMessage ?? '', response.data['message']);
-  //       Fluttertoast.showToast(msg: '${response.data['message']}', toastLength: Toast.LENGTH_LONG);
-  //     } else {
-  //       responseModel = ResponseModel(false, response.statusMessage ?? '', response.data['errors']);
-  //     }
-  //   } catch (e) {
-  //     responseModel = ResponseModel(false, "CATCH");
-  //     log('++++++++++++++ ${e.toString()} +++++++++++++++++++++++++', name: "ERROR AT generatedOtp()");
-  //   }
-  //
-  //   _isLoading = false;
-  //   update();
-  //   return responseModel;
-  // }
+
+
+
+
+
+
+
+
   //
   // Future<ResponseModel> verifyOtp({required String phone, required String otp}) async {
   //   log('----------- verifyOtp Called ----------');

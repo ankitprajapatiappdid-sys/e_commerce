@@ -1,11 +1,17 @@
+import 'package:e_commerce_app/controllers/auth_controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
+import '../../../services/constants.dart';
 import '../../../services/route_helper.dart';
 import '../../../services/theme.dart';
 import '../../base/custom_widget.dart/common_button.dart';
 import 'opt_verification_screen.dart';
+
+
+final _formKey = GlobalKey<FormState>();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +22,20 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
+
+
+  login(AuthController authController){
+    if (_formKey.currentState?.validate() ?? false) {
+      authController.generatedOtp(data: _phoneNumberController.text).then((value) {
+        if (value.isSuccess) {
+          authController.startTimer();
+          Navigator.pushReplacement(context, getCustomRoute(child: OTPVerification(phone: _phoneNumberController.text,)));
+          // getCustomRoute(child: OTPVerification(phone: _phoneNumberController.text,));
+        }
+        showToast(message: value.message, typeCheck: value.isSuccess);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,29 +78,33 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 20,
             ),
-            TextField(
-              autofocus: true,
-              controller: _phoneNumberController,
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(10),
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                hintText: "Phone number",
-                hintStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Colors.black.withOpacity(0.3),
-                    ),
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.black.withOpacity(0.3), width: 1)),
+            Form(
+              key: _formKey,
+              child: TextField(
+                autofocus: true,
+                controller: _phoneNumberController,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(10),
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                  hintText: "Phone number",
+                  hintStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Colors.black.withOpacity(0.3),
+                      ),
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.black.withOpacity(0.3), width: 1)),
+                ),
+                onChanged: (txt) {
+                  if (txt.length == 10) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    login(Get.find<AuthController>());
+                  }
+                },
               ),
-              onChanged: (txt) {
-                if (txt.length == 10) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                }
-              },
             ),
             const SizedBox(
               height: 20,
@@ -119,27 +143,17 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           child: SizedBox(
             height: 50,
-            child: CustomButton(
-              radius: 6,
-              elevation: 0,
-              color: Colors.black,
-              onTap: () {
-                Navigator.push(
-                    context,
-                    getCustomRoute(
-                        child: OTPVerification(
-                      phone: _phoneNumberController.text,
-                    )));
-              },
-              child: Text(
-                'Next',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
-              ),
-            ),
+            child: GetBuilder<AuthController>(builder: (authController) {
+              return CustomButton(
+                color: black,
+                isLoading: authController.isLoading,
+                onTap: () {
+                  login(authController);
+                },
+                elevation: 0,
+                title: "Get OTP",
+              );
+            }),
           ),
         ),
       ),

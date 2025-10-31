@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:toastification/toastification.dart';
+import 'controllers/dashboard_controller.dart';
 import 'controllers/one_signal_controller.dart';
 import 'services/constants.dart';
 import 'services/init.dart';
@@ -11,6 +12,7 @@ import 'views/screens/splash_screen/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Init().initialize();
+
   runApp(const MyApp());
 }
 

@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:e_commerce_app/services/route_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../../controllers/auth_controller.dart';
 import '../../../services/constants.dart';
 import '../../base/custom_widget.dart/custom_image.dart';
+import '../dashboard/dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -64,14 +69,19 @@ class _SplashScreenState extends State<SplashScreen> {
 //     });
 
     Timer.run(() {
-      Future.delayed(const Duration(seconds: 2), () {});
+      Future.delayed(const Duration(seconds: 2), () {
+        if(mounted) {
+          log("Navigated to dashBoard",name: "Nav worked");
+          Navigator.pushReplacement(context, getCustomRoute(child: DashboardScreen()));
+        }
+      });
       /*if (Get.find<AuthController>().isLoggedIn()) {
         Get.find<AuthController>().getUserProfileData().then((value) {
           Future.delayed(const Duration(seconds: 2), () {
             if (Get.find<AuthController>().checkUserData()) {
               Navigator.pushReplacement(
                 context,
-                getMaterialRoute(
+                getCustomRoute(
                   child: const Dashboard(),
                 ),
               );
@@ -130,3 +140,4 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+
