@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../controllers/product_controller.dart';
-import 'components/product_card.dart';
+import 'components/cart_product_card.dart';
 
 class ShoppingScreen extends StatefulWidget {
   const ShoppingScreen({super.key});
@@ -11,25 +11,13 @@ class ShoppingScreen extends StatefulWidget {
 }
 
 class _ShoppingScreenState extends State<ShoppingScreen> {
-  late final ProductController productController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    productController = Get.find<ProductController>();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      productController.getProducts();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Shopping",
+          "My Cart",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -39,10 +27,10 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (controller.productList.isEmpty) {
+          if (controller.cartList.isEmpty) {
             return const Center(
               child: Text(
-                "No products found.",
+                "Empty Cart.",
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             );
@@ -52,17 +40,18 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             padding: const EdgeInsets.all(12),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.68,
+              childAspectRatio: 0.57,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
-            itemCount: controller.productList.length,
+            itemCount: controller.cartList.length,
             itemBuilder: (context, index) {
-              final product = controller.productList[index];
-              return GestureDetector(
-                onTap: () {
-                },
-                child: ProductCard(productModel: product),
+              final product = controller.cartList[index];
+              return CartProductCard(
+                productModel: product,
+                isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
+                onLike: (p) => controller.toggleFavorite(p),
+                onRemoveToCart: (p) => controller.removeFromCart(id: p.id!),
               );
             },
           );

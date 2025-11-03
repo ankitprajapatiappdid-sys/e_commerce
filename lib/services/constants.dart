@@ -84,8 +84,8 @@ class AppConstants {
 
 
   //products
-  static const String categories='api/v1/categories';
   static const String getProducts='products';
+  static const String addToCart='carts';
 
 
   // Shared Key

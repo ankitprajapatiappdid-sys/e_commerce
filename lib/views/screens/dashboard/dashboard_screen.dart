@@ -2,7 +2,7 @@
 import 'dart:developer';
 
 import 'package:e_commerce_app/views/screens/dashboard/profile_screen/profile_screen.dart';
-import 'package:e_commerce_app/views/screens/dashboard/shopping_screen/shopping_screen.dart';
+import 'package:e_commerce_app/views/screens/dashboard/shopping_screen/my_cart_screen.dart';
 import 'package:e_commerce_app/views/screens/dashboard/wishlist_screen/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -30,8 +30,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final pages = [
     const HomeScreen(),
-    const WishlistScreen(),
     const ShoppingScreen(),
+    const WishlistScreen(),
     const ProfileScreen(),
   ];
 
@@ -71,7 +71,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       controller.dashPage = 1;
                       controller.update();
                     },
-                    title: 'Shopping',
+                    title: 'Cart',
                     icon: Assets.svgsProjectsOutline,
                     isActive: controller.dashPage == 1,
                   ),
@@ -80,7 +80,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       controller.dashPage = 2;
                       controller.update();
                     },
-                    title: 'Wishlist',
+                    title: 'Favourite',
                     icon: Assets.svgsHeartOutline,
                     isActive: controller.dashPage == 2,
                   ),
