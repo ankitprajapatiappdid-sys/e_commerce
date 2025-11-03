@@ -115,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             const Spacer(),
             CustomImage(
-              path: Assets.imagesLogo,
+              path: Assets.imagesECommerceLogo,
               height: size.height * .3,
               width: size.height * .3,
             ),
@@ -127,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
             ),
             Text(
-              "Subtitle",
+              "Seamless shopping at your fingertips",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const Spacer(),

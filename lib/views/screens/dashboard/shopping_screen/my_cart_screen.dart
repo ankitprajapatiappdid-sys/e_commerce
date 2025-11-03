@@ -1,6 +1,9 @@
+import 'package:e_commerce_app/services/route_helper.dart';
+import 'package:e_commerce_app/views/screens/dashboard/buy_now_screen/buy_now_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../controllers/product_controller.dart';
+import '../../../../services/theme.dart';
 import 'components/cart_product_card.dart';
 
 class ShoppingScreen extends StatefulWidget {
@@ -16,9 +19,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "My Cart",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold,color: backgroundLight),
         ),
       ),
       body: GetBuilder<ProductController>(
@@ -52,10 +55,37 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                 isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
                 onLike: (p) => controller.toggleFavorite(p),
                 onRemoveToCart: (p) => controller.removeFromCart(id: p.id!),
+                isAddedToCart: controller.cartList.any((p) => p.id ==product.id),
               );
             },
           );
         },
+      ),
+
+      floatingActionButton: GetBuilder<ProductController>(
+        builder: (controller){ return GestureDetector(
+          onTap: (){
+            Navigator.push(context, getCustomRoute(child: BuyNowScreen(cartListBuy: controller.cartList,)));
+          },
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(10))
+            ),
+            child:  Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add,color: Colors.white,),
+                  SizedBox(width: 10,),
+                  Text("Product...",style: TextStyle(color: Colors.white),)
+                ],
+              ),
+            ),
+          ),
+        );}
       ),
     );
   }

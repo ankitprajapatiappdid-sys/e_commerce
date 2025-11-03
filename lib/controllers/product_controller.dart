@@ -15,18 +15,57 @@ class ProductController extends GetxController implements GetxService {
 
   ProductController({required this.productRepo});
 
+
   bool isLoading = false;
 
+  int localId = 30;
+
+
+  List<ProductModel> productList = [];
   List<ProductModel> favoriteList = [];
   List<ProductModel> cartList = [];
 
+  List<ProductModel> myProductList = [];
+
   final String _favKey = "favorite_products";
+  final String localKey="Local_id";
+  final String _myProductKey = "my_products";
 
   @override
   void onInit() {
     super.onInit();
     _loadLocalFavorites();
+    _loadLocalIdCounter();
+    _loadMyProducts();
   }
+
+
+  Future<void> _saveMyProducts() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(
+      _myProductKey,
+      myProductList.map((p) => jsonEncode(p.toJson())).toList(),
+    );
+  }
+
+  Future<void> _loadMyProducts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final productData = prefs.getStringList(_myProductKey) ?? [];
+    myProductList =
+        productData.map((json) => ProductModel.fromJson(jsonDecode(json))).toList();
+    update();
+  }
+
+  Future<void> _loadLocalIdCounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    localId = prefs.getInt(localKey) ?? 1;
+  }
+
+  Future<void> _saveLocalIdCounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt(localKey, localId);
+  }
+
 
   Future<void> _loadLocalFavorites() async {
     final prefs = await SharedPreferences.getInstance();
@@ -55,10 +94,44 @@ class ProductController extends GetxController implements GetxService {
     update();
   }
 
+
+
+
+
+  void toggleCard(ProductModel product){
+    final exists = cartList.any((p) => p.id == product.id);
+    if (exists) {
+      cartList.removeWhere((p) => p.id == product.id);
+
+      removeFromCart(id: product.id!);
+
+      showCustomToast("${product.title} removed from Cart");
+    } else {
+      cartList.add(product);
+      showCustomToast("${product.title} added to Cart");
+    }
+    update();
+  }
+
   void clearCart() {
     cartList.clear();
     update();
   }
+
+  Future<void> clearMyProducts() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_myProductKey);
+    myProductList.clear();
+    update();
+  }
+
+  bool isImageUrl(String path) {
+    final uri = Uri.tryParse(path);
+    if (uri == null) return false;
+    return uri.hasScheme && (uri.isScheme('http') || uri.isScheme('https'));
+  }
+
+
 
 
   File? selectedImage;
@@ -72,7 +145,6 @@ class ProductController extends GetxController implements GetxService {
   Future<ResponseModel> removeFromCart({required int id}) async {
     log('----------- removeFromCart() -------------');
     ResponseModel responseModel;
-    isLoading = true;
     update();
 
     try {
@@ -98,7 +170,6 @@ class ProductController extends GetxController implements GetxService {
   Future<ResponseModel> addToCart({required ProductModel product}) async {
     log('----------- addToCart() -------------');
     ResponseModel responseModel;
-    isLoading = true;
     update();
 
     try {
@@ -138,7 +209,8 @@ class ProductController extends GetxController implements GetxService {
     update();
 
     try {
-      Map<String, dynamic> data = {
+      final Map<String, dynamic> data = {
+        "id":localId,
         "title": title,
         "price": price,
         "description": description,
@@ -149,6 +221,20 @@ class ProductController extends GetxController implements GetxService {
       Response response = await productRepo.addProducts(data: FormData(data));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        final newProduct = ProductModel(
+          id: localId,
+          title: title,
+          price: price,
+          description: description,
+          category: category,
+          image: selectedImage?.path ?? '',
+        );
+        myProductList.add(newProduct);
+        productList.add(newProduct);
+        _saveMyProducts();
+
+        localId ++;
+        await _saveLocalIdCounter();
         responseModel = ResponseModel(true, "Product added successfully");
         showCustomToast("Product added successfully Cool");
       } else {
@@ -166,7 +252,7 @@ class ProductController extends GetxController implements GetxService {
 
 
 
-  List<ProductModel> productList = [];
+
 
   Future<ResponseModel> getProducts() async {
     log('----------- getProducts() -------------');

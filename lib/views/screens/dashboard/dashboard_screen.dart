@@ -6,9 +6,11 @@ import 'package:e_commerce_app/views/screens/dashboard/shopping_screen/my_cart_s
 import 'package:e_commerce_app/views/screens/dashboard/wishlist_screen/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
 import '../../../controllers/dashboard_controller.dart';
+import '../../../controllers/product_controller.dart';
 import '../../../generated/assets.dart';
 import '../../../services/theme.dart';
 import 'home_screen/home_screen.dart';
@@ -25,6 +27,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final productController = Get.find<ProductController>();
+      productController.getProducts();
+    });
     log("Dashboard Screen Active", name: "IsDashBoard");
   }
 

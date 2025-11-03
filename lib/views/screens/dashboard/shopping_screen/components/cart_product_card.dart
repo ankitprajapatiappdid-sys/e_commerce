@@ -7,12 +7,14 @@ class CartProductCard extends StatefulWidget {
   final void Function(ProductModel)? onLike;
 
   final bool isInitiallyLiked;
+  final bool isAddedToCart;
 
   const CartProductCard({
     required this.productModel,
     this.onRemoveToCart,
     this.onLike,
     this.isInitiallyLiked = false,
+    this.isAddedToCart=false,
     super.key,
   });
 
@@ -146,8 +148,8 @@ class _CartProductCardState extends State<CartProductCard> {
                       }
                     },
                     icon: const Icon(Icons.add_shopping_cart, size: 18),
-                    label: const Text(
-                      "Remove",
+                    label:  Text(
+                      widget.isAddedToCart ?  "Remove": "Add to Cart",
                       style: TextStyle(fontSize: 13, color: Colors.white),
                     ),
                   ),

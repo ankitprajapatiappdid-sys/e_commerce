@@ -1,7 +1,10 @@
 import 'package:e_commerce_app/controllers/product_controller.dart';
+import 'package:e_commerce_app/services/route_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../services/theme.dart';
+import '../product_detail_screen/product_detail_screen.dart';
 import 'components/product_card.dart';
 import 'components/add_product_dialog.dart';
 
@@ -13,26 +16,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final productController = Get.find<ProductController>();
-      productController.getProducts();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Home",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold,color: backgroundLight),
         ),
       ),
       body: GetBuilder<ProductController>(
+
         builder: (controller) {
           if (controller.isLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -59,26 +55,55 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final product = controller.productList[index];
 
-              return ProductCard(
-                productModel: product,
-                isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
-                onLike: (p) => controller.toggleFavorite(p),
-                onAddToCart: (p) => controller.addToCart(product: p),
+              return GestureDetector(
+                onTap: (){
+                  Navigator.push(context, getCustomRoute(child: ProductDetailScreen(
+                    product: product,
+                    isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
+                    onLike: (p) => controller.toggleFavorite(p),
+                    onAddToCart: (p) => controller.addToCart(product: p),
+                    isAddedCart: controller.cartList.any((p) => p.id ==product.id),
+                  )));
+                },
+                child: ProductCard(
+                  productModel: product,
+                  isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
+                  onLike: (p) => controller.toggleFavorite(p),
+                  onAddToCart: (p) => controller.addToCart(product: p),
+                  isAddedCart: controller.cartList.any((p) => p.id ==product.id),
+                ),
               );
             },
           );
         },
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
+      floatingActionButton: GestureDetector(
+        onTap: (){
           showDialog(
             context: context,
             builder: (_) => const AddProductDialog(),
           );
         },
-        child: const Icon(Icons.add),
-      ),
+        child: Container(
+          height: 50,
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.all(Radius.circular(10))
+          ),
+          child:  Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add,color: Colors.white,),
+                SizedBox(width: 10,),
+                Text("Product...",style: TextStyle(color: Colors.white),)
+              ],
+            ),
+          ),
+        ),
+      )
     );
   }
 }

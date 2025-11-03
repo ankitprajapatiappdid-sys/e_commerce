@@ -67,7 +67,7 @@ class AppConstants {
   static const String localUrl = 'http://192.168.1.11:8000/';
   static String baseUrl = (kReleaseMode || isProduction) ? liveUrl : localUrl;
 
-  static String appName = 'App Name';
+  static String appName = 'FakeStore';
   static const String agoraAppId = 'c87b710048c049f59570bd1895b7e561';
 
   // Auth

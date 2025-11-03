@@ -1,37 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../controllers/product_controller.dart';
-import '../../../../services/theme.dart';
-import '../home_screen/components/product_card.dart';
+import '../../../../../controllers/product_controller.dart';
+import '../../../../../services/theme.dart';
+import '../components/my_product_card.dart';
 
-class WishlistScreen extends StatefulWidget {
-  const WishlistScreen({super.key});
+class MyProductsScreen extends StatelessWidget {
+  const MyProductsScreen({super.key});
 
-  @override
-  State<WishlistScreen> createState() => _WishlistScreenState();
-}
-
-class _WishlistScreenState extends State<WishlistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Favourites",
+          "Home",
           style: TextStyle(fontWeight: FontWeight.bold,color: backgroundLight),
         ),
       ),
       body: GetBuilder<ProductController>(
+
         builder: (controller) {
           if (controller.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (controller.favoriteList.isEmpty) {
+          if (controller.myProductList.isEmpty) {
             return const Center(
               child: Text(
-                "No favourite added.",
+                "No products found.",
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             );
@@ -41,14 +37,15 @@ class _WishlistScreenState extends State<WishlistScreen> {
             padding: const EdgeInsets.all(12),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.57,
+              childAspectRatio: 0.6,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
-            itemCount: controller.favoriteList.length,
+            itemCount: controller.myProductList.length,
             itemBuilder: (context, index) {
-              final product = controller.favoriteList[index];
-              return ProductCard(
+              final product = controller.myProductList[index];
+
+              return MyProductCard(
                 productModel: product,
                 isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
                 onLike: (p) => controller.toggleFavorite(p),
@@ -59,6 +56,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
           );
         },
       ),
+
     );
   }
 }

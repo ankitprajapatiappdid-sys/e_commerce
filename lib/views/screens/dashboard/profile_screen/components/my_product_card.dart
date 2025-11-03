@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:e_commerce_app/controllers/product_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../../../../data/models/product_model/product_model.dart';
 
-class ProductCard extends StatefulWidget {
+class MyProductCard extends StatefulWidget {
   final ProductModel productModel;
   final void Function(ProductModel)? onAddToCart;
   final void Function(ProductModel)? onLike;
@@ -13,7 +11,7 @@ class ProductCard extends StatefulWidget {
   final bool isInitiallyLiked;
   final bool isAddedCart;
 
-  const ProductCard({
+  const MyProductCard({
     required this.productModel,
     this.onAddToCart,
     this.onLike,
@@ -23,18 +21,19 @@ class ProductCard extends StatefulWidget {
   });
 
   @override
-  State<ProductCard> createState() => _ProductCardState();
+  State<MyProductCard> createState() => _MyProductCardState();
 }
 
-class _ProductCardState extends State<ProductCard> {
+class _MyProductCardState extends State<MyProductCard> {
   late bool isLiked;
-  late bool isCart;
+
+  late var file ;
 
   @override
   void initState() {
     super.initState();
     isLiked = widget.isInitiallyLiked;
-    isCart=widget.isAddedCart;
+    file = File(widget.productModel.image!);
   }
 
   @override
@@ -58,49 +57,19 @@ class _ProductCardState extends State<ProductCard> {
         children: [
           Stack(
             children: [
-              GetBuilder<ProductController>(
-                builder: (controller){
-                  return  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                    child: widget.productModel.image != null &&
-                        widget.productModel.image!.isNotEmpty
-                        ? (controller.isImageUrl(widget.productModel.image!)
-                        ? Image.network(
-                      widget.productModel.image!,
-                      height: 140,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Icon(
-                        Icons.broken_image,
-                        size: 80,
-                        color: Colors.grey,
-                      ),
-                    )
-                        : Image.file(
-                      File(widget.productModel.image!),
-                      height: 140,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Icon(
-                        Icons.broken_image,
-                        size: 80,
-                        color: Colors.grey,
-                      ),
-                    ))
-                        : const SizedBox(
-                      height: 140,
-                      child: Center(
-                        child: Icon(
-                          Icons.broken_image,
-                          size: 80,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  );
-                }
-              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.file(
+                    file,
+                    width: double.infinity,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  ),
+                ),
 
+              ),
 
               Positioned(
                 top: 8,
@@ -165,20 +134,17 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                     ),
                     onPressed: () {
-                      setState(() => isCart = !isCart);
                       if (widget.onAddToCart != null) {
                         widget.onAddToCart!(widget.productModel);
-
                       }
-
                     },
                     icon: const Icon(Icons.add_shopping_cart, size: 18),
                     label: Text(
-                      isCart ?  "Remove": "Add to Cart",
-                      style: TextStyle(fontSize: 13, color: Colors.white),
+                      widget.isAddedCart ?  "Remove": "Add to Cart",
+                      style: const TextStyle(fontSize: 13, color: Colors.white),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
