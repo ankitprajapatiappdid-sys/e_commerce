@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../controllers/product_controller.dart';
 import '../../../../services/theme.dart';
+import '../common_components/resuable_product_card.dart';
 import 'components/cart_product_card.dart';
 
 class ShoppingScreen extends StatefulWidget {
@@ -50,13 +51,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             itemCount: controller.cartList.length,
             itemBuilder: (context, index) {
               final product = controller.cartList[index];
-              return CartProductCard(
+              return ReusableProductCard(
                 productModel: product,
                 isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
                 onLike: (p) => controller.toggleFavorite(p),
-                onRemoveToCart: (p) => controller.removeFromCart(id: p.id!),
+                onRemoveFromCart: (p) => controller.removeFromCart(id: p.id!),
                 isAddedToCart: controller.cartList.any((p) => p.id ==product.id),
               );
+
             },
           );
         },
@@ -78,9 +80,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.add,color: Colors.white,),
+                  Icon(Icons.shopping_cart,color: Colors.white,),
                   SizedBox(width: 10,),
-                  Text("Product...",style: TextStyle(color: Colors.white),)
+                  Text("Buy Now",style: TextStyle(color: Colors.white),)
                 ],
               ),
             ),

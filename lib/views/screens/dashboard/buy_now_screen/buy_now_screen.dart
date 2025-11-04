@@ -18,10 +18,8 @@ class BuyNowScreen extends StatelessWidget {
     if (isSingleProduct) {
       totalPrice = (product?.price ?? 0) as double?;
     } else if (cartListBuy != null && cartListBuy!.isNotEmpty) {
-      totalPrice = cartListBuy!.fold(
-        0.0,
-            (sum, item) => sum + (item.price ?? 0),
-      );
+
+      totalPrice = cartListBuy!.fold(0.0, (sum, item) => sum + (item.price ?? 0));
     }
 
     const double deliveryFee = 5.0;
@@ -38,20 +36,20 @@ class BuyNowScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Products list or single product card
-            Expanded(
-              child: isSingleProduct
-                  ? ProductCard(productModel: product!)
-                  : ListView.builder(
-                itemCount: cartListBuy?.length ?? 0,
-                itemBuilder: (context, index) {
-                  final curProduct = cartListBuy![index];
-                  return ProductCard(productModel: curProduct);
-                },
-              ),
-            ),
+            isSingleProduct
+                ? ProductCard(productModel: product!)
+                : Expanded(
+                  child: ListView.builder(
+                    itemCount: cartListBuy?.length ?? 0,
+                    itemBuilder: (context, index) {
+                    final curProduct = cartListBuy![index];
+                    return ProductCard(productModel: curProduct);
+                    },
+                  ),
+                ),
 
             const SizedBox(height: 20),
 

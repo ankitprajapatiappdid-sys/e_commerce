@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../controllers/product_controller.dart';
 import '../../../../services/theme.dart';
-import '../home_screen/components/product_card.dart';
+import '../common_components/resuable_product_card.dart';
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
@@ -48,12 +48,13 @@ class _WishlistScreenState extends State<WishlistScreen> {
             itemCount: controller.favoriteList.length,
             itemBuilder: (context, index) {
               final product = controller.favoriteList[index];
-              return ProductCard(
+              return ReusableProductCard(
                 productModel: product,
                 isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
                 onLike: (p) => controller.toggleFavorite(p),
                 onAddToCart: (p) => controller.addToCart(product: p),
-                isAddedCart: controller.cartList.any((p) => p.id ==product.id),
+                onRemoveFromCart: (p) => controller.removeFromCart(id: p.id!),
+                isAddedToCart: controller.cartList.any((p) => p.id ==product.id),
               );
             },
           );

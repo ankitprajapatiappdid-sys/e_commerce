@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../services/theme.dart';
+import '../common_components/resuable_product_card.dart';
 import '../product_detail_screen/product_detail_screen.dart';
-import 'components/product_card.dart';
 import 'components/add_product_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -65,13 +65,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     isAddedCart: controller.cartList.any((p) => p.id ==product.id),
                   )));
                 },
-                child: ProductCard(
+                child: ReusableProductCard(
                   productModel: product,
                   isInitiallyLiked: controller.favoriteList.any((p) => p.id == product.id),
                   onLike: (p) => controller.toggleFavorite(p),
                   onAddToCart: (p) => controller.addToCart(product: p),
-                  isAddedCart: controller.cartList.any((p) => p.id ==product.id),
-                ),
+                  onRemoveFromCart: (p) => controller.removeFromCart(id: p.id!),
+                  isAddedToCart: controller.cartList.any((p) => p.id ==product.id),
+                )
               );
             },
           );
